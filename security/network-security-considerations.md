@@ -77,7 +77,7 @@ OpenBMC's [phosphor-user-manager][] provides the underlying
 authentication and authorization functions and ties into IPMI, Linux
 PAM, LDAP, and logging.  Some of OpenBMC services use phosphor-user-manager.
 
-[phosphor-user-manager]: https://github.com/openbmc/docs/blob/master/user_management.md
+[phosphor-user-manager]: https://github.com/openbmc/docs/blob/master/architecture/user_management.md
 
 Transport layer security (TLS) protocols are configured for each
 service at compile time, become part of the image, and cannot be
@@ -244,7 +244,7 @@ General security considerations for service discovery apply.
 ### UDP port 623 - IPMI RCMP
 
 The IPMI network-facing design is described here:
-https://github.com/openbmc/docs/blob/master/ipmi-architecture.md and
+https://github.com/openbmc/docs/blob/master/architecture/ipmi-architecture.md and
 the implementation is described here:
 https://github.com/openbmc/phosphor-net-ipmid.
 Note that host IPMI is outside the scope of this document.
