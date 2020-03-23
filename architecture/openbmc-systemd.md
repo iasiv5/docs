@@ -33,7 +33,7 @@ Phosphor OpenBMC, there is a link from default.target to multi-user.target.
 You'll find all the phosphor services associated with multi-user.target.
 
 ## Server Power On
-When OpenBMC is used within a server, the [obmc-host-start@.target](https://github.com/openbmc/openbmc/blob/171031d20c7ed03900739d51ba53ad0001f98fa5/meta-phosphor/common/recipes-core/systemd/obmc-targets/obmc-host-start%40.target)
+When OpenBMC is used within a server, the [obmc-host-start@.target](https://github.com/openbmc/phosphor-state-manager/blob/master/target_files/obmc-host-start%40.target)
 is what drives the boot of the system.
 
 If you dig into its .requires relationship, you'll see the following in the file
@@ -94,6 +94,22 @@ xyz.openbmc_project.State.Host RequestedHostTransition s
 xyz.openbmc_project.State.Host.Transition.On
 
 Underneath the covers, this is calling systemd with the server power on target.
+
+## Systemd Services or Monitoring Applications
+A common question when creating new OpenBMC applications which need to
+execute some logic in the context of systemd targets is whether they should
+be triggered by systemd services or by monitoring for the appropriate
+D-Bus signal indicating the start/stop of the target they are interested in.
+
+The basic guidelines for when to create a systemd service are the following:
+- If your application logic depends on other systemd based services then
+  make it a systemd service and utilize the Wants/After/Before service
+  capabilities.
+- If other applications depend on your application logic then it should be a
+  systemd service.
+- If your application failing during the target start could impact targets or
+  services that run after it, then it should be a systemd service. This ensures
+  dependent targets are not started if your application fails.
 
 ## Error Handling of Systemd
 With great numbers of targets and services, come great chances for failures.
@@ -158,7 +174,7 @@ This is set to "yes" for most OpenBMC services to handle the situation where
 someone starts the same target twice.   If the associated service with that
 target is not running (i.e. RemainAfterExit=no), then the service will be
 executed again.  Think about someone accidentally running the
-obmc-chassis-start@.target twice.  If you execute it when the operating system
+obmc-chassis-poweron@.target twice.  If you execute it when the operating system
 is up and running, and the service which toggles the pgood pin is re-executed,
 you're going to crash your system.  Given this info, the goal should always be
 to write "oneshot" services that have RemainAfterExit set to yes.
