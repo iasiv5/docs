@@ -1,9 +1,9 @@
-# OpenBMC kernel development
+# OpenBMC kernel and u-boot development
 
 > [!IMPORTANT]
 >
 > The kernel development philosophy described below also applies to OpenBMC's
-> u-boot fork.
+> u-boot fork, with the additional rules described in [U-Boot](#u-boot).
 
 The OpenBMC project maintains a kernel tree for use by the project. The tree's
 general development policy is that code must be upstream first. This is strongly
@@ -76,6 +76,36 @@ If you find yourself adding to `arch/arm/mach-aspeed/aspeed.c`, first send an
 email to the OpenBMC list to get the opinion of the kernel developers. Patches
 to `aspeed.c` will be treated with some prejudice as the file will be removed
 once we have drivers for all of the Aspeed peripherals.
+
+## U-Boot
+
+OpenBMC maintains its own u-boot fork at <https://github.com/openbmc/u-boot>.
+
+The `v2019.04-aspeed-openbmc` branch is heavily diverged from upstream v2019.04,
+mostly because of the ASPEED support it carries, and is not compatible with the
+latest upstream u-boot. As a consequence, functionality that exists in current
+upstream u-boot may not be available, and may not be possible to be backported.
+
+Which tree a patch belongs in depends on the SoC:
+
+- ASPEED AST2600 and earlier: patches go to the diverged v2019.04 tree. Sending
+  the change upstream as well is welcome, but we cannot guarantee that the
+  upstream code will work on these platforms.
+- ASPEED AST2700 and later: patches **must** be maintained upstream. They will
+  not be backported to v2019.04.
+- Non-ASPEED SoCs: same rule as AST2700, patches **must** be maintained
+  upstream. SoC support will not be backported to v2019.04.
+
+### Device trees
+
+Device trees in u-boot are a special case. Unlike the kernel, u-boot on OpenBMC
+usually only needs to bring up enough hardware to load the kernel, and the
+default EVB device tree is usually sufficient for that.
+
+Only send a machine-specific device tree for u-boot if it is genuinely required,
+for example when u-boot itself is used for netbooting and needs a correctly
+described network or storage path, or when your platform requires ECC or
+similar.
 
 ## Testing
 
