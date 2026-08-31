@@ -24,13 +24,16 @@ desirable:
 
 ## TL;DR
 
-If you require a patch added to the tree, follow these steps:
+If you require a patch added to the OpenBMC tree, follow these steps:
 
 1. Submit your patch upstream. It doesn't need to be upstream, but it should be
    on it's way, and not have any unresolved design concerns
-2. Use
-   `git format-patch --subject-prefix="PATCH linux ${BRANCH}" --to=openbmc@lists.ozlabs.org --to=joel@jms.id.au --to=andrew@codeconstruct.com.au`
-   to create a formatted patch
+2. If the patch has been applied to upstream, then cherry pick the commit to the
+   OpenBMC tree using `git cherry-pick -x -s ${COMMIT_HASH}`. This way, the
+   original commit hash will be added to the commit message
+3. Use
+   `git format-patch --subject-prefix="PATCH linux ${BRANCH}" --to=openbmc@lists.ozlabs.org --to=andrew@codeconstruct.com.au --to=tan.siewert@9elements.com --cc=joel@jms.id.au`
+   to create a formatted patch. For u-boot, use `PATCH u-boot` as subject prefix
 
 ## Developing a new driver
 
